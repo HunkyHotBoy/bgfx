@@ -365,6 +365,133 @@ namespace bgfx
 		return &g_internalData;
 	}
 
+
+  struct SuperContext
+
+  {
+
+    CallbackI* callback;
+
+    bx::AllocatorI* allocator;
+
+    InternalData internalData;
+
+    PlatformData platformData;
+
+    Caps caps;
+
+    bool platformDataChangedSinceReset;
+
+  
+
+    Context* ctx;
+
+    CallbackStub* callbackStub;
+
+    AllocatorStub* allocatorStub;
+
+    bool graphicsDebuggerPresent;
+
+    bool renderFrameCalled;
+
+#if BGFX_CONFIG_MULTITHREADED && !defined(BX_THREAD_LOCAL)
+
+    ThreadData threadIndex;
+
+#elif !BGFX_CONFIG_MULTITHREADED
+
+    uint32_t threadIndex;
+
+#else
+
+    uint32_t threadIndex;
+
+#endif
+
+  };
+
+  
+
+  static SuperContext s_superContext;
+
+  
+  
+
+  void setContext(void* ctx)
+
+  {
+
+    SuperContext* superctx = (SuperContext*)ctx;
+
+    g_callback = superctx->callback;
+
+    g_allocator = superctx->allocator;
+
+    g_internalData = superctx->internalData;
+
+    g_platformData = superctx->platformData;
+
+    g_caps = superctx->caps;
+
+    g_platformDataChangedSinceReset = superctx->platformDataChangedSinceReset;
+
+  
+
+    s_ctx = superctx->ctx;
+
+    s_callbackStub = superctx->callbackStub;
+
+    s_allocatorStub = superctx->allocatorStub;
+
+    s_graphicsDebuggerPresent = superctx->graphicsDebuggerPresent;
+
+    s_renderFrameCalled = superctx->renderFrameCalled;
+
+    s_threadIndex = superctx->threadIndex;
+
+  }
+
+  
+
+  void* getContext()
+
+  {
+
+    SuperContext* superctx = &s_superContext;
+
+    superctx->callback = g_callback;
+
+    superctx->allocator = g_allocator;
+
+    superctx->internalData = g_internalData;
+
+    superctx->platformData = g_platformData;
+
+    superctx->caps = g_caps;
+
+    superctx->platformDataChangedSinceReset = g_platformDataChangedSinceReset;
+
+  
+
+    superctx->ctx = s_ctx;
+
+    superctx->callbackStub = s_callbackStub;
+
+    superctx->allocatorStub = s_allocatorStub;
+
+    superctx->graphicsDebuggerPresent = s_graphicsDebuggerPresent;
+
+    superctx->renderFrameCalled = s_renderFrameCalled;
+
+    superctx->threadIndex = s_threadIndex;
+
+  
+
+    return &s_superContext;
+
+  }
+
+
 	uintptr_t overrideInternal(TextureHandle _handle, uintptr_t _ptr)
 	{
 		BGFX_CHECK_RENDER_THREAD();

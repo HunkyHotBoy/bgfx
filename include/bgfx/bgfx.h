@@ -24,6 +24,11 @@ namespace bx { struct AllocatorI; }
 /// BGFX
 namespace bgfx
 {
+	 struct SuperContext;
+
+ void setContext(void* ctx);
+
+ void* getContext();
 	/// Fatal error enum.
 	///
 	/// @attention C99's equivalent binding is `bgfx_fatal_t`.
